@@ -24,7 +24,8 @@ class Post(models.Model):
         choices=Status,
         default= Status.DRAFT
     )
-
+    objects = models.Manager()
+    published = PublishedManager()
     class  Meta:
         ordering = ['-publish']
         indexes =[
@@ -32,5 +33,11 @@ class Post(models.Model):
         ]
     def __str__(self):
         return self.title
-    
-    
+
+
+# Custom manager
+class PublishManager(models.Manager):
+    def get_queryset(self):
+        return(
+            super().get_queryset().filter(status=Post.Status.PUBLISHED)
+        )
